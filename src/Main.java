@@ -21,6 +21,7 @@ public class Main {
         int choice;
 
         do {
+
             System.out.println("\n========== CART MANAGEMENT SYSTEM ==========");
             System.out.println("1. View Products");
             System.out.println("2. Add Product to Cart");
@@ -36,12 +37,14 @@ public class Main {
             switch (choice) {
 
                 case 1:
+
                     System.out.println("\nAvailable Products");
-                    System.out.println("----------------------------------");
+                    System.out.println("------------------------------------------");
 
                     for (Product product : products) {
                         product.displayProduct();
                     }
+
                     break;
 
                 case 2:
@@ -55,6 +58,7 @@ public class Main {
                     Product selectedProduct = null;
 
                     for (Product product : products) {
+
                         if (product.getProductId() == id) {
                             selectedProduct = product;
                             break;
@@ -73,10 +77,12 @@ public class Main {
                             System.out.println("Product added to cart successfully.");
 
                         } else {
+
                             System.out.println("Insufficient stock.");
                         }
 
                     } else {
+
                         System.out.println("Product not found.");
                     }
 
@@ -112,14 +118,48 @@ public class Main {
                 case 6:
 
                     if (cart.isEmpty()) {
+
                         System.out.println("Cart is empty.");
+
                     } else {
 
-                        System.out.println("\n========= BILL =========");
+                        System.out.print("\nDo you have a coupon? (yes/no): ");
+                        String answer = sc.next();
+
+                        if (answer.equalsIgnoreCase("yes")) {
+
+                            System.out.print("Enter Coupon Code: ");
+                            String coupon = sc.next();
+
+                            if (cart.applyCoupon(coupon)) {
+
+                                System.out.println("Coupon Applied Successfully!");
+
+                            } else {
+
+                                System.out.println("Invalid Coupon!");
+                            }
+                        }
+
+                        System.out.println("\n============== FINAL BILL ==============");
+
                         cart.displayCart();
 
-                        System.out.println("Checkout Successful.");
-                        System.out.println("Thank You For Shopping!");
+                        System.out.println("----------------------------------------");
+                        System.out.printf("Subtotal      : ₹%.2f%n", cart.getTotalAmount());
+
+                        if (!cart.getAppliedCoupon().isEmpty()) {
+
+                            System.out.println("Coupon Used   : " + cart.getAppliedCoupon());
+                            System.out.printf("Discount      : -₹%.2f%n", cart.getDiscount());
+                        }
+
+                        System.out.println("----------------------------------------");
+                        System.out.printf("Amount Payable: ₹%.2f%n", cart.getFinalAmount());
+                        System.out.println("========================================");
+
+                        System.out.println("\nPayment Successful!");
+                        System.out.println("Thank You For Shopping.");
 
                         cart.clearCart();
                     }
@@ -128,7 +168,7 @@ public class Main {
 
                 case 7:
 
-                    System.out.println("Exiting...");
+                    System.out.println("Thank You!");
                     break;
 
                 default:
