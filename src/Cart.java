@@ -21,12 +21,18 @@ public class Cart {
         for (CartItem item : cartItems) {
 
             if (item.getProduct().getProductId() == product.getProductId()) {
+
                 item.setQuantity(item.getQuantity() + quantity);
+
+                System.out.println("Quantity Updated Successfully.");
+
                 return;
             }
         }
 
         cartItems.add(new CartItem(product, quantity));
+
+        System.out.println("Product Added Successfully.");
     }
 
     // Remove Product
@@ -38,16 +44,22 @@ public class Cart {
 
                 cartItems.remove(i);
 
-                System.out.println("Product removed successfully.");
+                System.out.println("Product Removed Successfully.");
+
                 return;
             }
         }
 
-        System.out.println("Product not found in cart.");
+        System.out.println("Product Not Found In Cart.");
     }
 
     // Update Quantity
     public void updateQuantity(int productId, int newQuantity) {
+
+        if (newQuantity <= 0) {
+            System.out.println("Quantity must be greater than zero.");
+            return;
+        }
 
         for (CartItem item : cartItems) {
 
@@ -55,15 +67,16 @@ public class Cart {
 
                 item.setQuantity(newQuantity);
 
-                System.out.println("Quantity updated successfully.");
+                System.out.println("Quantity Updated Successfully.");
+
                 return;
             }
         }
 
-        System.out.println("Product not found in cart.");
+        System.out.println("Product Not Found In Cart.");
     }
 
-    // Calculate Total
+    // Calculate Total Amount
     public double getTotalAmount() {
 
         double total = 0;
@@ -75,7 +88,9 @@ public class Cart {
         return total;
     }
 
-    // Apply Coupon
+    // ==========================
+    // APPLY COUPON
+    // ==========================
     public boolean applyCoupon(String couponCode) {
 
         couponCode = couponCode.toUpperCase();
@@ -84,35 +99,60 @@ public class Cart {
         discount = 0;
         appliedCoupon = "";
 
+        double total = getTotalAmount();
+
         switch (couponCode) {
 
             case "SAVE10":
-                discount = getTotalAmount() * 0.10;
+
+                if (total < 1000) {
+                    System.out.println("\nCoupon SAVE10 requires a minimum purchase of ₹1000.");
+                    return false;
+                }
+
+                discount = total * 0.10;
                 appliedCoupon = couponCode;
+
                 return true;
 
             case "SAVE20":
-                discount = getTotalAmount() * 0.20;
+
+                if (total < 5000) {
+                    System.out.println("\nCoupon SAVE20 requires a minimum purchase of ₹5000.");
+                    return false;
+                }
+
+                discount = total * 0.20;
                 appliedCoupon = couponCode;
+
                 return true;
 
             case "FLAT500":
+
+                if (total < 3000) {
+                    System.out.println("\nCoupon FLAT500 requires a minimum purchase of ₹3000.");
+                    return false;
+                }
+
                 discount = 500;
 
-                // Prevent discount greater than total
-                if (discount > getTotalAmount()) {
-                    discount = getTotalAmount();
+                if (discount > total) {
+                    discount = total;
                 }
 
                 appliedCoupon = couponCode;
+
                 return true;
 
             default:
+
+                System.out.println("\nInvalid Coupon Code.");
+
                 return false;
         }
     }
 
-    // Discount Getter
+    // Discount
     public double getDiscount() {
         return discount;
     }
@@ -122,7 +162,7 @@ public class Cart {
         return getTotalAmount() - discount;
     }
 
-    // Applied Coupon Getter
+    // Applied Coupon
     public String getAppliedCoupon() {
         return appliedCoupon;
     }
@@ -131,33 +171,42 @@ public class Cart {
     public void displayCart() {
 
         if (cartItems.isEmpty()) {
-            System.out.println("Cart is empty.");
+
+            System.out.println("\nCart is Empty.");
+
             return;
         }
 
-        System.out.println("------------------------------------------------------------------");
-        System.out.printf("%-5s %-20s %-10s %-10s %-10s%n",
+        System.out.println("\n==============================================================");
+        System.out.printf("%-5s %-20s %-10s %-8s %-12s%n",
                 "ID", "Product", "Price", "Qty", "Subtotal");
-        System.out.println("------------------------------------------------------------------");
+        System.out.println("==============================================================");
 
         for (CartItem item : cartItems) {
             item.displayCartItem();
         }
 
-        System.out.println("------------------------------------------------------------------");
+        System.out.println("==============================================================");
+
         System.out.printf("Subtotal : ₹%.2f%n", getTotalAmount());
 
         if (!appliedCoupon.isEmpty()) {
+
             System.out.println("Coupon   : " + appliedCoupon);
+
             System.out.printf("Discount : -₹%.2f%n", discount);
+
             System.out.printf("Total    : ₹%.2f%n", getFinalAmount());
         }
     }
 
     // Clear Cart
     public void clearCart() {
+
         cartItems.clear();
+
         discount = 0;
+
         appliedCoupon = "";
     }
 
